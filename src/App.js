@@ -86,16 +86,12 @@ export default function App() {
 
   // 2. Persist to Supabase
   const saveToSupabase = async (newDrivers, newTracks) => {
-    if (!isSupabaseConfigured) {
-      console.warn("Supabase is not configured. Changes will not persist on refresh.");
-      return;
-    }
+    if (!isSupabaseConfigured) return;
     try {
-      const { error } = await supabase.from('f1_season_data').upsert({ 
+      await supabase.from('f1_season_data').upsert({ 
         id: 1, 
         state_data: { drivers: newDrivers, tracks: newTracks } 
       });
-      if (error) console.error("Supabase Save Error:", error.message);
     } catch (err) {
       console.error("Supabase Exception:", err);
     }
@@ -424,30 +420,30 @@ export default function App() {
       <div className="fixed top-[30%] left-[50%] w-[30vw] h-[30vw] rounded-full blur-[120px] pointer-events-none transition-colors duration-1000 mix-blend-screen opacity-20 z-0" style={{ backgroundColor: backgroundTheme.orb3 }} />
 
       {/* Header */}
-      <header className="relative z-10 w-full p-6 border-b border-white/10 bg-white/5 backdrop-blur-md flex flex-wrap justify-between items-center gap-4 shadow-lg">
+      <header className="relative z-10 w-full p-4 md:p-6 border-b border-white/10 bg-white/5 backdrop-blur-md flex flex-col md:flex-row justify-between items-center gap-4 shadow-lg text-center md:text-left">
         <div>
-          <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 flex items-center gap-2">
+          <h1 className="text-xl md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 flex items-center justify-center md:justify-start gap-2">
             <TrophyIcon /> F1 2026 Live Predictor
           </h1>
-          <p className="text-xs text-white/50 mt-1 uppercase tracking-widest font-bold">Championship Mathematical Engine & Sync</p>
+          <p className="text-[10px] md:text-xs text-white/50 mt-1 uppercase tracking-widest font-bold">Championship Mathematical Engine & Sync</p>
         </div>
-        <div className="flex gap-3">
-          <label className="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm transition-all cursor-pointer font-bold shadow-sm">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+          <label className="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs md:text-sm transition-all cursor-pointer font-bold shadow-sm">
             <UploadIcon /> Import CSV
             <input type="file" accept=".csv" onChange={importCSV} className="hidden" />
           </label>
-          <button onClick={exportCSV} className="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm transition-all font-bold shadow-sm"><DownloadIcon /> Export CSV</button>
-          <button onClick={resetData} className="flex items-center gap-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/40 text-red-300 border border-red-500/30 rounded-xl text-sm transition-all font-bold shadow-sm"><TrashIcon /> Reset</button>
+          <button onClick={exportCSV} className="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs md:text-sm transition-all font-bold shadow-sm"><DownloadIcon /> Export CSV</button>
+          <button onClick={resetData} className="flex items-center gap-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/40 text-red-300 border border-red-500/30 rounded-xl text-xs md:text-sm transition-all font-bold shadow-sm"><TrashIcon /> Reset</button>
         </div>
       </header>
 
       {/* Main Grid */}
-      <main className="relative z-10 p-6 flex-1 max-w-screen-2xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="relative z-10 p-4 md:p-6 flex-1 max-w-screen-2xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
         
         {/* Left Column: Standings (WDC/WCC Toggle) */}
-        <section className="lg:col-span-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col">
+        <section className="lg:col-span-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-white">
+            <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-white">
               <TrophyIcon /> Standings
             </h2>
             <div className="flex bg-black/40 rounded-lg p-1 border border-white/5">
@@ -473,7 +469,7 @@ export default function App() {
                 
                 return (
                   <div key={driver.id} style={{ borderLeftColor: borderCol }} className={`border-l-4 bg-black/30 hover:bg-black/50 transition-colors p-3 rounded-r-xl flex justify-between items-center border-y border-r border-white/5 ${driver.status === 'ELIMINATED' ? 'opacity-50' : ''}`}>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       <span className="font-mono text-white/50 w-4 text-right text-xs font-bold">{currentRank}</span>
                       
                       <div className="w-5 flex justify-center shrink-0">
@@ -493,13 +489,13 @@ export default function App() {
                       </div>
 
                       <div>
-                        <div className="font-bold text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">{driver.name}</div>
-                        <div className="text-[9px] uppercase font-bold tracking-widest" style={{ color: borderCol }}>{driver.team}</div>
+                        <div className="font-bold text-xs md:text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] md:max-w-[120px]">{driver.name}</div>
+                        <div className="text-[8px] md:text-[9px] uppercase font-bold tracking-widest" style={{ color: borderCol }}>{driver.team}</div>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <span className="font-mono text-base font-black leading-none text-white">{driver.currentPoints} <span className="text-[10px] text-white/50 font-sans">pts</span></span>
-                      <span className={`text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-widest leading-none
+                      <span className="font-mono text-sm md:text-base font-black leading-none text-white">{driver.currentPoints} <span className="text-[9px] md:text-[10px] text-white/50 font-sans">pts</span></span>
+                      <span className={`text-[7px] md:text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-widest leading-none
                         ${driver.status === 'CHAMPION' ? 'bg-amber-400 text-black shadow-[0_0_10px_rgba(251,191,36,0.3)]' : 
                           driver.status === 'CONTENDER' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/10 text-white/50 border border-white/5'}
                       `}>
@@ -519,7 +515,7 @@ export default function App() {
                 
                 return (
                   <div key={team.id} style={{ borderLeftColor: borderCol }} className={`border-l-4 bg-black/30 hover:bg-black/50 transition-colors p-3 rounded-r-xl flex justify-between items-center border-y border-r border-white/5 ${team.status === 'ELIMINATED' ? 'opacity-50' : ''}`}>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       <span className="font-mono text-white/50 w-4 text-right text-xs font-bold">{currentRank}</span>
                       
                       <div className="w-5 flex justify-center shrink-0">
@@ -539,13 +535,13 @@ export default function App() {
                       </div>
 
                       <div>
-                        <div className="font-bold text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">{team.name}</div>
-                        <div className="text-[8px] uppercase font-bold tracking-widest text-white/60">{team.drivers.join(' / ')}</div>
+                        <div className="font-bold text-xs md:text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] md:max-w-[120px]">{team.name}</div>
+                        <div className="text-[7px] md:text-[8px] uppercase font-bold tracking-widest text-white/60">{team.drivers.join(' / ')}</div>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <span className="font-mono text-base font-black leading-none text-white">{team.currentPoints} <span className="text-[10px] text-white/50 font-sans">pts</span></span>
-                      <span className={`text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-widest leading-none
+                      <span className="font-mono text-sm md:text-base font-black leading-none text-white">{team.currentPoints} <span className="text-[9px] md:text-[10px] text-white/50 font-sans">pts</span></span>
+                      <span className={`text-[7px] md:text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-widest leading-none
                         ${team.status === 'CHAMPION' ? 'bg-amber-400 text-black shadow-[0_0_10px_rgba(251,191,36,0.3)]' : 
                           team.status === 'CONTENDER' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/10 text-white/50 border border-white/5'}
                       `}>
@@ -563,11 +559,12 @@ export default function App() {
         <section className="lg:col-span-8 flex flex-col gap-6">
           
           {/* Tabs Navigation */}
-          <div className="flex flex-wrap gap-2 bg-white/5 p-1 rounded-xl backdrop-blur-md w-max border border-white/10">
+          {/* MOBILE FIX: Uses w-full with horizontal overflow to prevent cut-offs on small screens */}
+          <div className="flex gap-2 bg-white/5 p-1.5 rounded-xl backdrop-blur-md border border-white/10 w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {['predictor', 'track_manager', 'scenarios', 'analytics'].map(tab => (
               <button 
                 key={tab} onClick={() => setActiveTab(tab)}
-                className={`px-5 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white/15 text-white shadow-lg' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+                className={`flex-shrink-0 px-4 md:px-5 py-2.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white/15 text-white shadow-lg' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
               >
                 {tab.replace('_', ' ')}
               </button>
@@ -587,7 +584,7 @@ export default function App() {
                   ) : uncompletedRaces.map(race => (
                     <button 
                       key={race.id} onClick={() => setActiveRaceId(race.id)}
-                      className={`min-w-[160px] p-4 rounded-xl snap-start text-left transition-all border backdrop-blur-xl ${
+                      className={`min-w-[160px] p-4 rounded-xl snap-start text-left transition-all border backdrop-blur-xl shrink-0 ${
                         activeRaceId === race.id ? 'bg-white/15 border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'bg-black/30 border-white/5 hover:bg-white/10'
                       }`}
                     >
@@ -609,7 +606,7 @@ export default function App() {
                     {completedRaces.map(race => (
                       <button 
                         key={race.id} onClick={() => setActiveRaceId(race.id)}
-                        className={`min-w-[160px] p-3 rounded-xl snap-start text-left transition-all border backdrop-blur-xl ${
+                        className={`min-w-[160px] p-3 rounded-xl snap-start text-left transition-all border backdrop-blur-xl shrink-0 ${
                           activeRaceId === race.id ? 'bg-white/10 border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'bg-black/50 border-transparent hover:bg-white/5 opacity-70'
                         }`}
                       >
@@ -626,13 +623,13 @@ export default function App() {
 
               {/* Active Race Editor */}
               {activeRace && (
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl animate-fade-in relative">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl animate-fade-in relative">
                   <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
                     <div>
-                      <h3 className={`text-2xl font-black drop-shadow-md text-white`}>
+                      <h3 className={`text-xl md:text-2xl font-black drop-shadow-md text-white`}>
                         {activeRace.name}
                       </h3>
-                      <p className="text-white/60 text-xs mt-1 uppercase font-bold tracking-widest">
+                      <p className="text-white/60 text-[10px] md:text-xs mt-1 uppercase font-bold tracking-widest">
                         {activeRace.status === 'completed' ? 'This result is officially locked.' : 'Assign finishing positions to update predictions.'}
                       </p>
                     </div>
@@ -644,7 +641,7 @@ export default function App() {
                       <div className="absolute inset-0 bg-black/60 backdrop-blur-md rounded-2xl" onClick={() => setEditingPosition(null)} />
                       <div className="relative bg-black/90 backdrop-blur-2xl border border-white/20 p-6 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-2xl animate-slide-in">
                         <div className="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
-                          <h4 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                          <h4 className="text-xs md:text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
                             Select Driver for {editingPosition.session === 'sprintResults' ? `Sprint P${editingPosition.index + 1}` : `Race P${editingPosition.index + 1}`}
                           </h4>
                           <button onClick={() => setEditingPosition(null)} className="text-white/40 hover:text-white transition-colors">
@@ -687,7 +684,7 @@ export default function App() {
                     {/* PODIUM GRID (P1-P3) */}
                     <div className="space-y-3">
                       <h3 className="text-[10px] font-black text-white/50 uppercase tracking-widest">Podium Finishers</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                         {[0, 1, 2].map((idx) => {
                           const driverId = safeGp[idx];
                           const driverObj = drivers.find(d => d.id === driverId);
@@ -697,17 +694,17 @@ export default function App() {
                             <div 
                               key={`gp-${idx}`} 
                               onClick={() => { if(activeRace.status !== 'completed') setEditingPosition({ session: 'gpResults', index: idx }) }}
-                              className={`bg-black/30 p-5 rounded-xl border border-white/10 flex flex-col justify-between shadow-inner relative overflow-hidden transition-all ${activeRace.status !== 'completed' ? 'cursor-pointer hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]' : ''}`}
+                              className={`bg-black/30 p-4 md:p-5 rounded-xl border border-white/10 flex flex-col justify-between shadow-inner relative overflow-hidden transition-all ${activeRace.status !== 'completed' ? 'cursor-pointer hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]' : ''}`}
                             >
                               <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: teamCol || '#333' }} />
-                              <div className="flex justify-between items-center mb-3">
-                                <span className={`text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-1.5 opacity-90`}>
+                              <div className="flex justify-between items-center mb-2 md:mb-3">
+                                <span className={`text-[10px] md:text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-1.5 opacity-90`}>
                                   <span className={`w-1.5 h-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]`} /> P{idx + 1}
                                 </span>
-                                <span className="text-xs font-bold text-white/60">+{gpPoints[idx]}p</span>
+                                <span className="text-[10px] md:text-xs font-bold text-white/60">+{gpPoints[idx]}p</span>
                               </div>
-                              <div className="flex items-center justify-between mt-2">
-                                <span className={`font-black text-lg drop-shadow-md ${driverId ? 'text-white' : 'text-white/20'}`}>
+                              <div className="flex items-center justify-between mt-1 md:mt-2">
+                                <span className={`font-black text-base md:text-lg drop-shadow-md ${driverId ? 'text-white' : 'text-white/20'}`}>
                                   {driverId ? driverObj?.name.split(" ").slice(-1)[0] : 'Click to Set'}
                                 </span>
                               </div>
@@ -744,7 +741,7 @@ export default function App() {
 
                     {/* SPRINT SCORERS */}
                     {activeRace.isSprint && (
-                      <div className="p-5 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 mt-4">
+                      <div className="p-4 md:p-5 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 mt-4">
                         <h4 className="font-bold text-white text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
                           <span className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" /> Sprint Top 8 (S1-S8)
                         </h4>
@@ -772,14 +769,14 @@ export default function App() {
                     {activeRace.status === 'upcoming' ? (
                       <button 
                         onClick={() => toggleRaceStatus(activeRace.id, 'completed')}
-                        className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 font-black uppercase tracking-widest py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2 backdrop-blur-md"
+                        className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 font-black uppercase tracking-widest py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2 backdrop-blur-md text-xs md:text-sm"
                       >
                         <CheckIcon /> Commit as Official Result
                       </button>
                     ) : (
                       <button 
                         onClick={() => toggleRaceStatus(activeRace.id, 'upcoming')}
-                        className="w-full bg-white/5 hover:bg-white/10 text-white/80 border border-white/10 hover:border-white/30 font-black uppercase tracking-widest py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 backdrop-blur-md"
+                        className="w-full bg-white/5 hover:bg-white/10 text-white/80 border border-white/10 hover:border-white/30 font-black uppercase tracking-widest py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 backdrop-blur-md text-xs md:text-sm"
                       >
                         Unlock to Re-edit Predictions
                       </button>
@@ -792,74 +789,76 @@ export default function App() {
 
           {/* TAB: Track Manager */}
           {activeTab === 'track_manager' && (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl animate-fade-in">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl animate-fade-in">
               <div className="mb-6 border-b border-white/10 pb-4">
-                <h3 className="text-2xl font-black text-white flex items-center gap-2 drop-shadow-md">
-                  <SettingsIcon /> Calendar / Track Manager
+                <h3 className="text-xl md:text-2xl font-black text-white flex items-center gap-2 drop-shadow-md">
+                  <SettingsIcon /> Calendar Manager
                 </h3>
-                <p className="text-white/60 text-xs mt-1 uppercase font-bold tracking-widest">
+                <p className="text-white/60 text-[10px] md:text-xs mt-1 uppercase font-bold tracking-widest">
                   Configure the racing season. Dismiss tracks to exclude them completely from analytics.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                {/* Headers */}
-                <div className="grid grid-cols-12 gap-4 px-4 py-2 text-[10px] text-white/50 font-black uppercase tracking-widest border-b border-white/10">
-                  <div className="col-span-2 text-center">Round</div>
-                  <div className="col-span-3">Track Name</div>
-                  <div className="col-span-2 text-center">Format</div>
-                  <div className="col-span-2 text-center">Status</div>
-                  <div className="col-span-2 text-center">In Season</div>
-                  <div className="col-span-1"></div>
-                </div>
-                
-                {tracks.map((t) => (
-                  <div key={t.id} className={`grid grid-cols-12 gap-4 items-center px-4 py-3 bg-black/30 rounded-xl border border-white/5 transition-all ${t.isActive ? '' : 'opacity-40 grayscale'}`}>
-                    <div className="col-span-2 text-center">
-                      <input 
-                        type="number" 
-                        value={t.round} 
-                        onChange={(e) => updateTrackConfig(t.id, 'round', Number(e.target.value))}
-                        className="w-12 bg-black/50 border border-white/10 rounded px-2 py-1 text-center text-sm font-mono text-white outline-none focus:border-white/30"
-                      />
-                    </div>
-                    <div className="col-span-3">
-                      <div className="font-bold text-sm text-white">{t.name}</div>
-                      <div className="text-[10px] text-white/50 uppercase font-black">{t.date}</div>
-                    </div>
-                    <div className="col-span-2 text-center flex flex-col items-center justify-center gap-1">
-                      <button 
-                        onClick={() => {
-                          if (t.status === 'completed') return alert('Unlock this race first to change its format to prevent math errors.');
-                          updateTrackConfig(t.id, 'isSprint', !t.isSprint);
-                        }}
-                        className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${t.isSprint ? 'bg-white/80' : 'bg-white/20'}`}
-                      >
-                        <span className={`inline-block h-2 w-2 transform rounded-full ${t.isSprint ? 'bg-black' : 'bg-white/50'} transition-transform ${t.isSprint ? 'translate-x-4' : 'translate-x-1'}`} />
-                      </button>
-                      <span className="text-[8px] font-bold text-white/50 uppercase tracking-widest">{t.isSprint ? 'Sprint' : 'Std'}</span>
-                    </div>
-                    <div className="col-span-2 text-center flex justify-center">
-                       <span className={`text-[9px] px-2 py-1 rounded font-black uppercase tracking-widest ${t.status === 'completed' ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-white/5 text-white/50 border border-white/10'}`}>
-                         {t.status}
-                       </span>
-                    </div>
-                    <div className="col-span-2 text-center flex justify-center">
-                      <button 
-                        onClick={() => {
-                          if (t.status === 'completed') return alert('Unlock this race first to dismiss it from the season.');
-                          updateTrackConfig(t.id, 'isActive', !t.isActive);
-                        }}
-                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${t.isActive ? 'bg-white/80' : 'bg-white/20'}`}
-                      >
-                        <span className={`inline-block h-3 w-3 transform rounded-full ${t.isActive ? 'bg-black' : 'bg-white/50'} transition-transform ${t.isActive ? 'translate-x-5' : 'translate-x-1'}`} />
-                      </button>
-                    </div>
-                    <div className="col-span-1 text-right text-[10px] font-black text-white/30 uppercase tracking-widest">
-                      {t.id}
-                    </div>
+              {/* MOBILE FIX: Wrapped Track Manager Table in horizontal scroll to prevent squishing */}
+              <div className="space-y-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
+                <div className="min-w-[650px]">
+                  <div className="grid grid-cols-12 gap-4 px-4 py-2 text-[10px] text-white/50 font-black uppercase tracking-widest border-b border-white/10">
+                    <div className="col-span-2 text-center">Round</div>
+                    <div className="col-span-3">Track Name</div>
+                    <div className="col-span-2 text-center">Format</div>
+                    <div className="col-span-2 text-center">Status</div>
+                    <div className="col-span-2 text-center">In Season</div>
+                    <div className="col-span-1"></div>
                   </div>
-                ))}
+                  
+                  {tracks.map((t) => (
+                    <div key={t.id} className={`grid grid-cols-12 gap-4 items-center px-4 py-3 bg-black/30 rounded-xl border border-white/5 transition-all ${t.isActive ? '' : 'opacity-40 grayscale'}`}>
+                      <div className="col-span-2 text-center">
+                        <input 
+                          type="number" 
+                          value={t.round} 
+                          onChange={(e) => updateTrackConfig(t.id, 'round', Number(e.target.value))}
+                          className="w-12 bg-black/50 border border-white/10 rounded px-2 py-1 text-center text-sm font-mono text-white outline-none focus:border-white/30"
+                        />
+                      </div>
+                      <div className="col-span-3">
+                        <div className="font-bold text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis">{t.name}</div>
+                        <div className="text-[10px] text-white/50 uppercase font-black">{t.date}</div>
+                      </div>
+                      <div className="col-span-2 text-center flex flex-col items-center justify-center gap-1">
+                        <button 
+                          onClick={() => {
+                            if (t.status === 'completed') return alert('Unlock this race first to change its format to prevent math errors.');
+                            updateTrackConfig(t.id, 'isSprint', !t.isSprint);
+                          }}
+                          className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${t.isSprint ? 'bg-white/80' : 'bg-white/20'}`}
+                        >
+                          <span className={`inline-block h-2 w-2 transform rounded-full ${t.isSprint ? 'bg-black' : 'bg-white/50'} transition-transform ${t.isSprint ? 'translate-x-4' : 'translate-x-1'}`} />
+                        </button>
+                        <span className="text-[8px] font-bold text-white/50 uppercase tracking-widest">{t.isSprint ? 'Sprint' : 'Std'}</span>
+                      </div>
+                      <div className="col-span-2 text-center flex justify-center">
+                         <span className={`text-[9px] px-2 py-1 rounded font-black uppercase tracking-widest ${t.status === 'completed' ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-white/5 text-white/50 border border-white/10'}`}>
+                           {t.status}
+                         </span>
+                      </div>
+                      <div className="col-span-2 text-center flex justify-center">
+                        <button 
+                          onClick={() => {
+                            if (t.status === 'completed') return alert('Unlock this race first to dismiss it from the season.');
+                            updateTrackConfig(t.id, 'isActive', !t.isActive);
+                          }}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${t.isActive ? 'bg-white/80' : 'bg-white/20'}`}
+                        >
+                          <span className={`inline-block h-3 w-3 transform rounded-full ${t.isActive ? 'bg-black' : 'bg-white/50'} transition-transform ${t.isActive ? 'translate-x-5' : 'translate-x-1'}`} />
+                        </button>
+                      </div>
+                      <div className="col-span-1 text-right text-[10px] font-black text-white/30 uppercase tracking-widest">
+                        {t.id}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -867,11 +866,11 @@ export default function App() {
           {/* TAB: Scenarios */}
           {activeTab === 'scenarios' && (
             <div className="grid grid-cols-1 gap-6">
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6 shadow-xl">
                 <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2"><SparklesIcon /> Dynamic Solver</h3>
-                <p className="text-sm text-white/60 mb-4">Auto-fill all active remaining upcoming races based on targeted scenarios.</p>
+                <p className="text-xs md:text-sm text-white/60 mb-4">Auto-fill all active remaining upcoming races based on targeted scenarios.</p>
                 <div className="mb-4">
-                  <label className="block text-xs font-bold text-white/50 uppercase mb-2">Target Driver</label>
+                  <label className="block text-[10px] md:text-xs font-bold text-white/50 uppercase mb-2">Target Driver</label>
                   <select 
                     value={solverTarget} onChange={e => setSolverTarget(e.target.value)}
                     className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-white/30 font-bold"
@@ -880,10 +879,10 @@ export default function App() {
                     {drivers.map(d => <option key={d.id} value={d.id} className="bg-[#0a0a0a]">{d.name}</option>)}
                   </select>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <button onClick={() => runSolver('Clean Sweep')} className="py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs transition-all text-center text-white">🧹 Clean Sweep<br/><span className="text-[10px] text-white/50 font-normal">P1 Every Session</span></button>
-                  <button onClick={() => runSolver('Tight Squeeze')} className="py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs transition-all text-center text-white">🤏 Tight Squeeze<br/><span className="text-[10px] text-white/50 font-normal">P1 vs Top Rivals P2</span></button>
-                  <button onClick={() => runSolver('Midfield Chaos')} className="py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs transition-all text-center text-white">🌪 Midfield Chaos<br/><span className="text-[10px] text-white/50 font-normal">Rivals DNF</span></button>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <button onClick={() => runSolver('Clean Sweep')} className="py-3 px-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs transition-all text-center text-white">🧹 Clean Sweep<br/><span className="text-[10px] text-white/50 font-normal mt-1 block">P1 Every Session</span></button>
+                  <button onClick={() => runSolver('Tight Squeeze')} className="py-3 px-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs transition-all text-center text-white">🤏 Tight Squeeze<br/><span className="text-[10px] text-white/50 font-normal mt-1 block">P1 vs Top Rivals P2</span></button>
+                  <button onClick={() => runSolver('Midfield Chaos')} className="py-3 px-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs transition-all text-center text-white">🌪 Midfield Chaos<br/><span className="text-[10px] text-white/50 font-normal mt-1 block">Rivals DNF</span></button>
                 </div>
               </div>
             </div>
@@ -891,8 +890,8 @@ export default function App() {
 
           {/* TAB: Analytics */}
           {activeTab === 'analytics' && (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white"><SparklesIcon /> Championship Deficit Analytics</h3>
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-8 shadow-2xl">
+              <h3 className="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2 text-white"><SparklesIcon /> Deficit Analytics</h3>
               
               {uncompletedRaces.length > 0 ? (() => {
                 const leader = liveStandings[0];
@@ -909,8 +908,8 @@ export default function App() {
                 return (
                   <div className="space-y-6">
                     
-                    {/* Primary Analytics (P2 vs P1) */}
-                    <div className="grid grid-cols-3 gap-4">
+                    {/* MOBILE FIX: Grid explicitly responsive to prevent squishing text */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="bg-black/30 p-4 rounded-xl border border-white/5 text-center">
                         <div className="text-[10px] text-white/50 font-black uppercase tracking-widest mb-1">Remaining Rounds</div>
                         <div className="text-3xl font-mono font-bold text-white">{uncompletedRaces.length}</div>
@@ -925,30 +924,30 @@ export default function App() {
                       </div>
                     </div>
                     
-                    <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
+                    <div className="p-4 md:p-6 bg-white/5 border border-white/10 rounded-xl">
                       {isDecided ? (
-                        <p className="text-lg font-bold text-white">The Championship has been mathematically decided!</p>
+                        <p className="text-sm md:text-lg font-bold text-white">The Championship has been mathematically decided!</p>
                       ) : deficit === 0 ? (
-                        <p className="text-lg text-white/80">The championship is tied! Every position counts in the remaining <strong className="text-white">{uncompletedRaces.length}</strong> active races.</p>
+                        <p className="text-sm md:text-lg text-white/80">The championship is tied! Every position counts in the remaining <strong className="text-white">{uncompletedRaces.length}</strong> active races.</p>
                       ) : (
-                        <p className="text-lg text-white/80 leading-relaxed">
-                          For <strong className="text-white" style={{ color: teamColors[p2.team] }}>{p2.name}</strong> to surpass <strong className="text-white" style={{ color: teamColors[leader.team] }}>{leader.name}</strong>, they must outscore them by an exact average of <strong className="text-white text-2xl mx-1 font-mono">{reqPerRace}</strong> points in each of the remaining {uncompletedRaces.length} race weekends.
+                        <p className="text-sm md:text-lg text-white/80 leading-relaxed">
+                          For <strong className="text-white" style={{ color: teamColors[p2.team] }}>{p2.name}</strong> to surpass <strong className="text-white" style={{ color: teamColors[leader.team] }}>{leader.name}</strong>, they must outscore them by an exact average of <strong className="text-white text-xl md:text-2xl mx-1 font-mono">{reqPerRace}</strong> points in each of the remaining {uncompletedRaces.length} race weekends.
                         </p>
                       )}
                     </div>
 
-                    {/* Secondary Analytics: Analyze Other Contenders */}
+                    {/* Secondary Analytics */}
                     {eligibleContenders.length > 0 && (
                       <div className="mt-8 pt-8 border-t border-white/10">
-                        <h4 className="text-lg font-bold mb-4 flex items-center gap-2 text-white">
+                        <h4 className="text-base md:text-lg font-bold mb-4 flex items-center gap-2 text-white">
                           Analyze Other Contenders
                         </h4>
-                        <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
-                          <span className="text-white/60 text-sm font-bold uppercase tracking-widest">Compare Leader vs:</span>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                          <span className="text-white/60 text-xs md:text-sm font-bold uppercase tracking-widest">Compare Leader vs:</span>
                           <select 
                             value={analyticsTargetId} 
                             onChange={(e) => setAnalyticsTargetId(e.target.value)}
-                            className="bg-black/40 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-white/30 w-full md:w-auto flex-1 font-bold"
+                            className="bg-black/40 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-white/30 w-full sm:w-auto flex-1 font-bold text-sm"
                           >
                             <option value="" className="bg-[#0a0a0a]">Select a mathematically eligible driver...</option>
                             {eligibleContenders.map(d => (
@@ -964,9 +963,9 @@ export default function App() {
                            const targetReq = targetDeficit > 0 ? (targetDeficit / uncompletedRaces.length).toFixed(2) : 0;
                            
                            return (
-                             <div className="p-6 bg-white/5 border border-white/10 rounded-xl animate-fade-in">
+                             <div className="p-4 md:p-6 bg-white/5 border border-white/10 rounded-xl animate-fade-in">
                                <p className="text-sm text-white/80 leading-relaxed">
-                                 For <strong className="text-white" style={{ color: teamColors[target.team] }}>{target.name}</strong> to surpass <strong className="text-white" style={{ color: teamColors[leader.team] }}>{leader.name}</strong>, they must overcome a <strong className="text-white">{targetDeficit}</strong> point deficit. This requires outscoring the leader by an exact average of <strong className="text-white text-xl mx-1 font-mono">{targetReq}</strong> points in each of the remaining {uncompletedRaces.length} active races.
+                                 For <strong className="text-white" style={{ color: teamColors[target.team] }}>{target.name}</strong> to surpass <strong className="text-white" style={{ color: teamColors[leader.team] }}>{leader.name}</strong>, they must overcome a <strong className="text-white">{targetDeficit}</strong> point deficit. This requires outscoring the leader by an exact average of <strong className="text-white text-lg md:text-xl mx-1 font-mono">{targetReq}</strong> points in each of the remaining {uncompletedRaces.length} active races.
                                </p>
                              </div>
                            );
@@ -976,7 +975,7 @@ export default function App() {
                   </div>
                 )
               })() : (
-                <p className="text-white/50 text-lg py-8 text-center">All active season rounds have been marked completed. The championship is finalized.</p>
+                <p className="text-white/50 text-sm md:text-lg py-8 text-center">All active season rounds have been marked completed. The championship is finalized.</p>
               )}
             </div>
           )}
