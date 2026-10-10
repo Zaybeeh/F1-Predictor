@@ -15,6 +15,31 @@ const supabase = isSupabaseConfigured ? createClient(supabaseUrl, supabaseKey) :
 const gpPoints = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 const sprintPoints = [8, 7, 6, 5, 4, 3, 2, 1];
 
+const getCompletedRacePoints = (tracks) => {
+  const pointsByDriver = {};
+  const completedTracks = tracks
+    .filter(track => track.isActive && track.status === 'completed')
+    .sort((a, b) => a.round - b.round);
+
+  completedTracks.forEach(track => {
+    (track.gpResults || []).forEach((driverId, position) => {
+      if (driverId && gpPoints[position]) {
+        pointsByDriver[driverId] = (pointsByDriver[driverId] || 0) + gpPoints[position];
+      }
+    });
+
+    if (track.isSprint) {
+      (track.sprintResults || []).forEach((driverId, position) => {
+        if (driverId && sprintPoints[position]) {
+          pointsByDriver[driverId] = (pointsByDriver[driverId] || 0) + sprintPoints[position];
+        }
+      });
+    }
+  });
+
+  return pointsByDriver;
+};
+
 const teamColors = {
   'McLaren': '#ff8000', 'Red Bull': '#3671c6', 'Ferrari': '#dc0000', 
   'Mercedes': '#27f4d2', 'Aston Martin': '#229971', 'Alpine': '#0090ff', 
@@ -113,7 +138,11 @@ export default function App() {
   // 4. Mathematical Engine: Adaptive Baseline Ranks
   const baseRanks = useMemo(() => {
     const hasPredictions = tracks.some(t => t.isActive && t.status === 'upcoming' && (t.gpResults.some(id => id !== '') || t.sprintResults.some(id => id !== '')));
-    let wdcBasePoints = [...drivers].map(d => ({ ...d, currentPoints: d.points || 0 }));
+    const completedRacePoints = getCompletedRacePoints(tracks);
+    let wdcBasePoints = [...drivers].map(d => ({
+      ...d,
+      currentPoints: Math.max(Number(d.points) || 0, completedRacePoints[d.id] || 0)
+    }));
     
     if (!hasPredictions) {
        const completedRacesSorted = tracks.filter(t => t.status === 'completed' && t.isActive).sort((a, b) => b.round - a.round);
@@ -155,8 +184,12 @@ export default function App() {
   // 5. Mathematical Engine: Live Driver Standings
   const liveStandings = useMemo(() => {
     if (!drivers || drivers.length === 0) return [];
-    const standings = drivers.map(d => ({ ...d, currentPoints: d.points || 0 }));
     const activeSeasonTracks = tracks.filter(t => t.isActive);
+    const completedRacePoints = getCompletedRacePoints(activeSeasonTracks);
+    const standings = drivers.map(d => ({
+      ...d,
+      currentPoints: Math.max(Number(d.points) || 0, completedRacePoints[d.id] || 0)
+    }));
 
     activeSeasonTracks.forEach(t => {
       if (t.status === 'upcoming') {
